@@ -17,7 +17,6 @@ option.
 The tasks.yml file contains each of the individual tasks and any required and optional parameters for each.
 For example:
 
-    logfile: var/tasks.log
     tasks:
         example_task:
             class: \\ExampleTask
