@@ -1,0 +1,23 @@
+{
+  "name": "inspectioneering/taskrunner",
+  "description": "Run all of your project's recurring tasks through a single PHP script instead of having to create endless cron jobs.",
+  "authors": [
+    {
+      "name": "Nick Schmoyer",
+      "email": "nschmoyer@inspectioneering.com"
+    }
+  ],
+  "require": {
+    "symfony/yaml": "^3.2",
+    "symfony/console": "^3.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
+  "autoload": {
+    "psr-4": { "Inspectioneering\\Component\\TaskRunner\\": "" },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  }
+}
