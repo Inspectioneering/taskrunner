@@ -1,7 +1,0 @@
-tasks:
-  example_task:
-    class: "\\Inspectioneering\\TaskRunner\\ExampleTask"
-    cron: "* * * * * *"
-  example_2:
-    class: "Example2"
-    cron: "30 * * * * *"
