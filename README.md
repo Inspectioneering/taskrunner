@@ -31,3 +31,10 @@ Usage
 
 * `vendor/bin/taskrunner:all` - Run all active tasks
 * `vendor/bin/taskrunner:task [name]` - Run a single task
+
+Options
+-------
+
+* `class` - Class name of the task to run. The class should extend `Task` and should include a namespace,
+if necessary.
+* `minutes` - Number of minutes between each task execution.
