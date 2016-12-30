@@ -17,12 +17,14 @@ option.
 The tasks.yml file contains each of the individual tasks and any required and optional parameters for each.
 For example:
 
-    example_task:
-        class: \\ExampleTask
-        minutes: 10
-    second_task:
-        class: \\MyNamespace\\SecondTask
-        minutes: 30
+    logfile: var/tasks.log
+    tasks:
+        example_task:
+            class: \\ExampleTask
+            minutes: 10
+        second_task:
+            class: \\MyNamespace\\SecondTask
+            minutes: 30
 
 Usage
 -----
