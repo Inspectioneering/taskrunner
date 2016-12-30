@@ -7,11 +7,15 @@ use Symfony\Component\Yaml\Parser;
 
 class TaskRunner
 {
-    public function __construct()
+    public function __construct($configDir = null)
     {
         $yaml = new Parser();
 
-        $this->config = $yaml->parse(file_get_contents(__DIR__ . '/../tasks.yml'));
+        if ($configDir) {
+            $this->config = $yaml->parse(file_get_contents($configDir . 'tasks.yml'));
+        } else {
+            $this->config = $yaml->parse(file_get_contents(__DIR__ . '/../tasks.yml'));
+        }
     }
 
     public function execute($task = null)
@@ -36,11 +40,7 @@ class TaskRunner
         $cron = CronExpression::factory($task['cron']);
 
         if ($cron->isDue()) {
-            echo "Execute " . $task['class'] . " now\n";
             call_user_func(array($task['class'], 'execute'));
-        } else {
-            echo "Wait until " . $cron->getNextRunDate()->format('Y-m-d H:i:s') . " to run " . $task['class'] . "\n";
         }
-
     }
 }
