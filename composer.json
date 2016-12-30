@@ -20,5 +20,8 @@
     "exclude-from-classmap": [
       "/tests/"
     ]
-  }
+  },
+  "bin": [
+    "bin/taskrunner"
+  ]
 }
