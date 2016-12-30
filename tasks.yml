@@ -1,0 +1,7 @@
+tasks:
+  example_task:
+    class: "\\Inspectioneering\\Component\\TaskRunner\\ExampleTask"
+    cron: "* * * * * *"
+  example_2:
+    class: "Example2"
+    cron: "30 * * * * *"

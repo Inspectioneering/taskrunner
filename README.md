@@ -21,20 +21,20 @@ For example:
     tasks:
         example_task:
             class: \\ExampleTask
-            minutes: 10
+            cron: 10 * * * * *
         second_task:
             class: \\MyNamespace\\SecondTask
-            minutes: 30
+            cron: 0 1 * * * *
 
 Usage
 -----
 
-* `vendor/bin/taskrunner:all` - Run all active tasks
-* `vendor/bin/taskrunner:task [name]` - Run a single task
+* `vendor/bin/taskrunner` - Run all active tasks
+* `vendor/bin/taskrunner --task=[name]` - Run a single task
 
-Options
--------
+Parameters
+----------
 
 * `class` - Class name of the task to run. The class should extend `Task` and should include a namespace,
 if necessary.
-* `minutes` - Number of minutes between each task execution.
+* `cron` - CRON expression that determines how often the task should be executed.

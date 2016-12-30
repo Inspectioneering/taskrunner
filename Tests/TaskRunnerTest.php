@@ -9,6 +9,11 @@ class TaskRunnerTest extends TestCase
 {
     public function testCanLoadConfigFile()
     {
+        // make sure the config file is readable
+    }
+
+    public function testInvalidConfigTaskThrowsException()
+    {
 
     }
 }
