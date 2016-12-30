@@ -24,7 +24,8 @@ class TaskRunnerCommand extends Command
                 'config-dir',
                 'c',
                 InputOption::VALUE_REQUIRED,
-                'Directory of the tasks.yml file'
+                'Directory of the tasks.yml file',
+                '.'
             )
         ;
     }

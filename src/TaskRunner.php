@@ -11,11 +11,14 @@ class TaskRunner
     {
         $yaml = new Parser();
 
-        if ($configDir) {
-            $this->config = $yaml->parse(file_get_contents($configDir . 'tasks.yml'));
-        } else {
-            $this->config = $yaml->parse(file_get_contents(__DIR__ . '/../tasks.yml'));
+        if (file_exists(getcwd() . "/tasks.yml")) {
+            $configDir = getcwd();
+        } elseif (file_exists(getcwd() . "/config/tasks.yml")) {
+            $configDir = getcwd() . "/config/";
         }
+
+        $this->config = $yaml->parse(file_get_contents($configDir . "/tasks.yml"));
+
     }
 
     public function execute($task = null)
