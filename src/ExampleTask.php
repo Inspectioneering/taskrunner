@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspectioneering\Component\TaskRunner;
+namespace Inspectioneering\TaskRunner;
 
 class ExampleTask extends Task
 {

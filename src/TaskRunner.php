@@ -1,10 +1,9 @@
 <?php
 
-namespace Inspectioneering\Component\TaskRunner;
+namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
 use Symfony\Component\Yaml\Parser;
-use Inspectioneering\Component\TaskRunner\Task\ExampleTask;
 
 class TaskRunner
 {
@@ -12,7 +11,7 @@ class TaskRunner
     {
         $yaml = new Parser();
 
-        $this->config = $yaml->parse(file_get_contents(__DIR__.'/tasks.yml'));
+        $this->config = $yaml->parse(file_get_contents(__DIR__ . '/../tasks.yml'));
     }
 
     public function execute($task = null)

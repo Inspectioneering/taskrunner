@@ -16,9 +16,9 @@
     "phpunit/phpunit": "^4.0"
   },
   "autoload": {
-    "psr-4": { "Inspectioneering\\Component\\TaskRunner\\": "" },
+    "psr-4": { "Inspectioneering\\TaskRunner\\": "src" },
     "exclude-from-classmap": [
-      "/Tests/"
+      "/tests/"
     ]
   }
 }

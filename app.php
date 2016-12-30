@@ -2,5 +2,5 @@
 
 require_once 'vendor/autoload.php';
 
-$runner = new \Inspectioneering\Component\TaskRunner\TaskRunner();
+$runner = new \Inspectioneering\TaskRunner\TaskRunner();
 $runner->execute();
