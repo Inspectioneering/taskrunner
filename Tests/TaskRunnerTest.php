@@ -1,5 +1,9 @@
 <?php
+
+namespace Inspectioneering\Component\TaskRunner\Tests;
+
 use PHPUnit\Framework\TestCase;
+use Inspectioneering\Component\TaskRunner\TaskRunner;
 
 class TaskRunnerTest extends TestCase
 {
