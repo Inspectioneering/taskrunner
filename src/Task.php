@@ -2,7 +2,7 @@
 
 namespace Inspectioneering\TaskRunner;
 
-class Task
+abstract class Task implements TaskInterface
 {
-    
+
 }

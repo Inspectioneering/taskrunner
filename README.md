@@ -7,6 +7,10 @@ create endless cron jobs.
 Installation
 ------------
 
+1. Install the package via composer: `composer require inspectioneering/taskrunner`
+2. Create a `tasks.yml` file (see below)
+3. Create one or more Task classes to be executed. You can copy the `ExampleTask.php` file located at `vendor/inspectioneering/taskrunner/src` to get started.
+
 Setup
 -----
 
@@ -19,17 +23,25 @@ For example:
 
     tasks:
         example_task:
-            class: \\ExampleTask
-            cron: 10 * * * * *
+            class: "\\ExampleTask"
+            cron: "10 * * * *"
         second_task:
-            class: \\MyNamespace\\SecondTask
-            cron: 0 1 * * * *
+            class: "\\MyNamespace\\SecondTask"
+            cron: "0 1 * * *"
 
 Usage
 -----
 
-* `vendor/bin/taskrunner` - Run all active tasks
-* `vendor/bin/taskrunner --task=[name]` - Run a single task
+Tasks will only be executed if they meet the criteria you've defined in your tasks.yml file.
+
+Via command line:
+
+* `vendor/bin/taskrunner run` - Run all active tasks
+* `vendor/bin/taskrunner run --task=[name]` - Run a single task
+
+Or, add the following entry to your CRON (`crontab -e`):
+
+`* * * * * php /my/project/directory/vendor/bin/taskrunner run`
 
 Parameters
 ----------
