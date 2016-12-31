@@ -1,6 +1,10 @@
 {
   "name": "inspectioneering/taskrunner",
   "description": "Run all of your project's recurring tasks through a single PHP script instead of having to create endless cron jobs.",
+  "license": "MIT",
+  "keywords": [
+    "CRON"
+  ],
   "authors": [
     {
       "name": "Nick Schmoyer",
