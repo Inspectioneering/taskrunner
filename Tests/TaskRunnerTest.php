@@ -2,10 +2,9 @@
 
 namespace Inspectioneering\Component\TaskRunner\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Inspectioneering\Component\TaskRunner\TaskRunner;
+use Inspectioneering\TaskRunner\TaskRunner;
 
-class TaskRunnerTest extends TestCase
+class TaskRunnerTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanLoadConfigFile()
     {

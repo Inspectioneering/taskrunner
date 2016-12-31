@@ -6,6 +6,6 @@ class ExampleTask extends Task
 {
     public static function execute()
     {
-        echo "Hello\n";
+        echo TEST . " Hello\n";
     }
 }

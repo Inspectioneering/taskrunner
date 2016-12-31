@@ -17,13 +17,17 @@ class TaskRunner
     {
         $yaml = new Parser();
 
-        if (file_exists(getcwd() . "/tasks.yml")) {
-            $configDir = getcwd();
-        } elseif (file_exists(getcwd() . "/config/tasks.yml")) {
-            $configDir = getcwd() . "/config/";
+        // Find the tasks.yml file and pull everything into an array.
+        if (file_exists($file = getcwd() . "/tasks.yml") || file_exists($file = getcwd() . "/config/tasks.yml") || file_exists($file = $configDir . "/tasks.yml")) {
+            $this->config = $yaml->parse(file_get_contents($file));
+        } else {
+            throw new \Exception("Could not locate the tasks.yml configuration file.");
         }
 
-        $this->config = $yaml->parse(file_get_contents($configDir . "/tasks.yml"));
+        // If a custom bootstrap file was included in the config, load it.
+        if (isset($this->config['bootstrap'])) {
+            require_once(getcwd() . "/" . $this->config['bootstrap']);
+        }
 
     }
 

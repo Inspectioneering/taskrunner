@@ -18,9 +18,13 @@ By default, TaskRunner will search for a `tasks.yml` file in your project root o
 `config` folder. You can specify a different file location by using the `--config-dir=...`
 option.
 
+Optionally, you can reference a bootstrap file that will be called before any tasks are run. This is useful, for example, if you
+need to connect to your database for specific tasks.
+
 The tasks.yml file contains each of the individual tasks and any required and optional parameters for each.
 For example:
 
+    bootstrap: "vendor/autoload.php" # or "src/MyApp/bootstrap.php"
     tasks:
         example_task:
             class: "\\ExampleTask"
