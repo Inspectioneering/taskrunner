@@ -19,7 +19,8 @@ By default, TaskRunner will search for a `tasks.yml` file in your project root o
 option.
 
 Optionally, you can reference a bootstrap file that will be called before any tasks are run. This is useful, for example, if you
-need to connect to your database for specific tasks.
+need to connect to your database for specific tasks. Furthermore, you may use a PSR-3 logger such as Monolog by assigning it to the `$taskLog` variable
+in your bootstrap file.
 
 The tasks.yml file contains each of the individual tasks and any required and optional parameters for each.
 For example:

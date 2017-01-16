@@ -8,7 +8,10 @@
 
 namespace Inspectioneering\TaskRunner;
 
+use Psr\Log\LoggerInterface;
+
 interface TaskInterface
 {
-    public static function execute();
+    public function __construct(LoggerInterface $logger);
+    public function execute();
 }

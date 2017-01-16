@@ -9,10 +9,13 @@
 namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
+use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Parser;
 
 class TaskRunner
 {
+    protected $logger;
+
     public function __construct($configDir = null)
     {
         $yaml = new Parser();
@@ -27,6 +30,13 @@ class TaskRunner
         // If a custom bootstrap file was included in the config, load it.
         if (isset($this->config['bootstrap'])) {
             require_once(getcwd() . "/" . $this->config['bootstrap']);
+
+            if (isset($taskLog)) {
+                $this->logger = $taskLog;
+                var_dump($taskLog); die();
+            } else {
+                $this->logger = new NullLogger();
+            }
         }
 
     }
@@ -53,7 +63,8 @@ class TaskRunner
         $cron = CronExpression::factory($task['cron']);
 
         if ($cron->isDue()) {
-            call_user_func(array($task['class'], 'execute'));
+            $taskObject = new $task['class']($this->logger);
+            $taskObject->execute();
         }
     }
 }

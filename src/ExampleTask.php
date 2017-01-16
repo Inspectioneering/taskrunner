@@ -4,8 +4,8 @@ namespace Inspectioneering\TaskRunner;
 
 class ExampleTask extends Task
 {
-    public static function execute()
+    public function execute()
     {
-        echo TEST . " Hello\n";
+        echo "Hello\n";
     }
 }
