@@ -33,7 +33,6 @@ class TaskRunner
 
             if (isset($taskLog)) {
                 $this->logger = $taskLog;
-                var_dump($taskLog); die();
             } else {
                 $this->logger = new NullLogger();
             }
