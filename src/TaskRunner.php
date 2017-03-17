@@ -21,7 +21,10 @@ class TaskRunner
         $yaml = new Parser();
 
         // Find the tasks.yml file and pull everything into an array.
-        if (file_exists($file = getcwd() . "/tasks.yml") || file_exists($file = getcwd() . "/config/tasks.yml") || file_exists($file = $configDir . "/tasks.yml")) {
+        if (file_exists($file = getcwd() . "/tasks.yml")
+            || file_exists($file = getcwd() . "/config/tasks.yml")
+            || file_exists($file = $configDir . "/tasks.yml")
+        ) {
             $this->config = $yaml->parse(file_get_contents($file));
         } else {
             throw new \Exception("Could not locate the tasks.yml configuration file.");
@@ -29,7 +32,13 @@ class TaskRunner
 
         // If a custom bootstrap file was included in the config, load it.
         if (isset($this->config['bootstrap'])) {
-            require_once(getcwd() . "/" . $this->config['bootstrap']);
+            if (file_exists($file = __DIR__ . "/" . $this->config['bootstrap'])
+                || file_exists($file = __DIR__ . "/../" . $this->config['bootstrap'])
+                || file_exists($file = __DIR__ . "/../../" . $this->config['bootstrap'])
+                || file_exists($file = __DIR__ . "/../../../" . $this->config['bootstrap'])
+                || file_exists($file = $this->config['bootstrap'])
+            )
+            require_once($file);
 
             if (isset($taskLog)) {
                 $this->logger = $taskLog;
