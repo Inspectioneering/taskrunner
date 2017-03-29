@@ -33,6 +33,12 @@ class TaskRunnerCommand extends Command
                 'Directory of the tasks.yml file',
                 '.'
             )
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Add this flag to force the task(s) to run, regardless of their cron'
+            )
         ;
     }
 
@@ -40,9 +46,10 @@ class TaskRunnerCommand extends Command
     {
         $task = ($input->getOption('task') ? $input->getOption('task') : null);
         $configDir = ($input->getOption('config-dir') ? $input->getOption('config-dir') : null);
+        $force = ($input->getOption('force') ? true : false);
 
         $taskRunner = new TaskRunner($configDir);
-        $taskRunner->execute($task);
+        $taskRunner->execute($task, $force);
 
     }
 }

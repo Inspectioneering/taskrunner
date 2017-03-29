@@ -39,40 +39,42 @@ class TaskRunner
                 || file_exists($file = $this->config['bootstrap'])
             )
             require_once($file);
+        }
 
-            if (isset($taskLog)) {
-                $this->logger = $taskLog;
-            } else {
-                $this->logger = new NullLogger();
-            }
+        if (isset($taskLog)) {
+            $this->logger = $taskLog;
+        } else {
+            $this->logger = new NullLogger();
         }
 
     }
 
-    public function execute($task = null)
+    public function execute($task = null, $force = false)
     {
         if ($task) {
 
-            $this->runTask($this->config['tasks'][$task]);
+            $this->runTask($this->config['tasks'][$task], $force);
 
         } else {
 
             foreach ($this->config['tasks'] as $task) {
 
-                $this->runTask($task);
+                $this->runTask($task, $force);
 
             }
 
         }
     }
 
-    private function runTask($task)
+    private function runTask($task, $force)
     {
         $cron = CronExpression::factory($task['cron']);
 
-        if ($cron->isDue()) {
+        if ($cron->isDue() || $force) {
             $taskObject = new $task['class']($this->logger);
             $taskObject->execute();
         }
     }
+
+
 }
