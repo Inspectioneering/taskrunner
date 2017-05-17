@@ -6,13 +6,10 @@ use Inspectioneering\TaskRunner\TaskRunner;
 
 class TaskRunnerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanLoadConfigFile()
+    public function testMissingConfigFileTaskThrowsException()
     {
-        // make sure the config file is readable
-    }
+        $this->setExpectedException(\Exception::class);
 
-    public function testInvalidConfigTaskThrowsException()
-    {
-
+        $runner = new TaskRunner('/path/to/some/fake/config/dir');
     }
 }

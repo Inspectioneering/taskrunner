@@ -37,40 +37,41 @@ class TaskRunner
                 || file_exists($file = __DIR__ . "/../../" . $this->config['bootstrap'])
                 || file_exists($file = __DIR__ . "/../../../" . $this->config['bootstrap'])
                 || file_exists($file = $this->config['bootstrap'])
-            )
-            require_once($file);
-
-            if (isset($taskLog)) {
-                $this->logger = $taskLog;
-            } else {
-                $this->logger = new NullLogger();
+            ) {
+                require_once($file);
             }
+        }
+
+        if (isset($taskLog)) {
+            $this->logger = $taskLog;
+        } else {
+            $this->logger = new NullLogger();
         }
 
     }
 
-    public function execute($name = null)
+    public function execute($name = null, $force = false)
     {
         if ($name) {
 
-            $this->runTask($name, $this->config['tasks'][$name]);
+            $this->runTask($name, $this->config['tasks'][$name], $force);
 
         } else {
 
             foreach ($this->config['tasks'] as $name => $task) {
 
-                $this->runTask($name, $task);
+                $this->runTask($name, $task, $force);
 
             }
 
         }
     }
 
-    private function runTask($name, $task)
+    private function runTask($name, $task, $force)
     {
         $cron = CronExpression::factory($task['cron']);
 
-        if ($cron->isDue()) {
+        if ($cron->isDue() || $force) {
 
             $this->logger->info(sprintf("Running task %s", $name));
 

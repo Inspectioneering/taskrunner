@@ -48,6 +48,10 @@ Or, add the following entry to your CRON (`crontab -e`):
 
 `* * * * * php /my/project/directory/vendor/bin/taskrunner run`
 
+To force a task to run, regardless of whether or not the cron entry is valid:
+
+* `vendor/bin/taskrunner run --task=[name] --force`
+
 Parameters
 ----------
 
