@@ -19,6 +19,15 @@ abstract class Task implements TaskInterface
         $this->setLogger($logger);
     }
 
+    public function preExecute()
+    {
+        try {
+            $this->execute();
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf("Task encountered an error: %s", $e->getMessage()));
+        }
+    }
+
     /**
      * @param LoggerInterface $logger The name of the logger to be set.
      */

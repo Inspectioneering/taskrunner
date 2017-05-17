@@ -49,30 +49,34 @@ class TaskRunner
 
     }
 
-    public function execute($task = null)
+    public function execute($name = null)
     {
-        if ($task) {
+        if ($name) {
 
-            $this->runTask($this->config['tasks'][$task]);
+            $this->runTask($name, $this->config['tasks'][$name]);
 
         } else {
 
-            foreach ($this->config['tasks'] as $task) {
+            foreach ($this->config['tasks'] as $name => $task) {
 
-                $this->runTask($task);
+                $this->runTask($name, $task);
 
             }
 
         }
     }
 
-    private function runTask($task)
+    private function runTask($name, $task)
     {
         $cron = CronExpression::factory($task['cron']);
 
         if ($cron->isDue()) {
+
+            $this->logger->info(sprintf("Running task %s", $name));
+
             $taskObject = new $task['class']($this->logger);
-            $taskObject->execute();
+            $taskObject->preExecute();
+
         }
     }
 }
