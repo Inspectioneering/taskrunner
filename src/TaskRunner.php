@@ -16,6 +16,19 @@ class TaskRunner
 {
     protected $logger;
 
+    /**
+     * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
+     * either the current working directory or in the config folder.
+     *
+     * Also, if a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
+     * search for the file.
+     *
+     * @todo Fix line 61 (the logger) -- allow monolog config in tasks.yml to address this.
+     *
+     * @param null|string $configDir
+     *
+     * @throws TaskException
+     */
     public function __construct($configDir = null)
     {
         $yaml = new Parser();
@@ -27,7 +40,7 @@ class TaskRunner
         ) {
             $this->config = $yaml->parse(file_get_contents($file));
         } else {
-            throw new \Exception("Could not locate the tasks.yml configuration file.");
+            throw new TaskException("Could not locate the tasks.yml configuration file.");
         }
 
         // If a custom bootstrap file was included in the config, load it.
@@ -39,6 +52,8 @@ class TaskRunner
                 || file_exists($file = $this->config['bootstrap'])
             ) {
                 require_once($file);
+            } else {
+                throw new TaskException("Could not locate the bootstrap file specified in tasks.yml.");
             }
         }
 
@@ -50,6 +65,14 @@ class TaskRunner
 
     }
 
+    /**
+     * Execute one or more tasks. If the $name argument is specified, only try to run that specific task according to its
+     * cron definition (as defined in the tasks.yml file). If $name is null, try to run all tasks according to their cron
+     * definitions. If $force is set to true, run the task[s] regardless of whether or not they meet the cron requirements.
+     *
+     * @param null|string $name
+     * @param bool $force
+     */
     public function execute($name = null, $force = false)
     {
         if ($name) {
@@ -67,14 +90,24 @@ class TaskRunner
         }
     }
 
+    /**
+     * Run a single task.
+     *
+     * @param $name
+     * @param $task
+     * @param $force
+     */
     private function runTask($name, $task, $force)
     {
         $cron = CronExpression::factory($task['cron']);
 
         if ($cron->isDue() || $force) {
 
-            $this->logger->info(sprintf("Running task %s", $name));
+            $this->logger->info(sprintf("Running task [%s]", $name));
 
+            /**
+             * @var Task $taskObject
+             */
             $taskObject = new $task['class']($this->logger);
             $taskObject->preExecute();
 
