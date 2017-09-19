@@ -13,3 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - TaskRunnerTest searches for a thrown TaskException instead of core Exception.
+
+### Fixed
+- Added execute permissions to the executable so using 'php' is not required.
