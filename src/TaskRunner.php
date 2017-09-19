@@ -9,12 +9,21 @@
 namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
-use Psr\Log\NullLogger;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Parser;
 
 class TaskRunner
 {
-    protected $logger;
+    /**
+     * @var mixed An array of configuration variables defined by tasks.yml
+     */
+    protected $config;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $log;
 
     /**
      * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
@@ -22,8 +31,6 @@ class TaskRunner
      *
      * Also, if a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
      * search for the file.
-     *
-     * @todo Fix line 61 (the logger) -- allow monolog config in tasks.yml to address this.
      *
      * @param null|string $configDir
      *
@@ -57,12 +64,8 @@ class TaskRunner
             }
         }
 
-        if (isset($taskLog)) {
-            $this->logger = $taskLog;
-        } else {
-            $this->logger = new NullLogger();
-        }
-
+        // Configure logging per tasks.yml, or use stdout otherwise.
+        $this->log = $this->configureLogger($this->config);
     }
 
     /**
@@ -103,14 +106,55 @@ class TaskRunner
 
         if ($cron->isDue() || $force) {
 
-            $this->logger->info(sprintf("Running task [%s]", $name));
+            // Update the monolog processor to include the name of the task in the log record.
+            $this->log->pushProcessor(function ($record) use ($name, $force) {
+                $record['extra']['task'] = $name;
+                $record['extra']['forced'] = $force ? "true" : "false";
+
+                return $record;
+            });
+
+            $this->log->info(sprintf("Running task [%s]", $name));
 
             /**
              * @var Task $taskObject
              */
-            $taskObject = new $task['class']($this->logger);
+            $taskObject = new $task['class']($this->log);
             $taskObject->preExecute();
 
+        }
+    }
+
+    /**
+     * If monolog is configured in the tasks.yml file, set up one or more handlers per the configuration. Otherwise, just
+     * create a blank Logger (i.e. will output to stdout)
+     *
+     * @param $config
+     * @return Logger
+     */
+    private function configureLogger($config)
+    {
+        if (isset($config['monolog'])) {
+
+            // Can specify monolog.name in tasks.yml. If not set, just use 'tasks'
+            $log = new Logger(!empty($config['monolog']['name']) ? $config['monolog']['name'] : "tasks");
+
+            // Loop through each of the handlers defined in tasks.yml and instantiate their classes
+            // Technically, monolog handlers don't NEED to be set - they will simply go to stdout.
+            if (isset($config['monolog']['handlers'])) {
+                foreach ($config['monolog']['handlers'] as $arguments) {
+
+                    $class = array_shift($arguments);
+
+                    $log->pushHandler(new $class(...$arguments));
+
+                }
+            }
+
+            return $log;
+
+        } else {
+            return new Logger("tasks");
         }
     }
 }

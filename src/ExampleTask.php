@@ -6,6 +6,6 @@ class ExampleTask extends Task
 {
     public function execute()
     {
-        echo "Hello\n";
+        $this->log->info("Hello");
     }
 }

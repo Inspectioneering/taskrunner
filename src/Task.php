@@ -12,27 +12,38 @@ use Psr\Log\LoggerInterface;
 
 abstract class Task implements TaskInterface
 {
-    protected $logger;
+    /**
+     * @var LoggerInterface
+     */
+    protected $log;
 
-    public function __construct(LoggerInterface $logger)
+    /**
+     * Task constructor.
+     *
+     * @param LoggerInterface $log
+     */
+    public function __construct(LoggerInterface $log)
     {
-        $this->setLogger($logger);
+        $this->setLogger($log);
     }
 
+    /**
+     * This function is called before the task is executed to handle errors.
+     */
     public function preExecute()
     {
         try {
             $this->execute();
         } catch (\Exception $e) {
-            $this->logger->error(sprintf("Task encountered an error: %s", $e->getMessage()));
+            $this->log->error(sprintf("Task encountered an error: %s", $e->getMessage()));
         }
     }
 
     /**
-     * @param LoggerInterface $logger The name of the logger to be set.
+     * @param LoggerInterface $log The name of the logger to be set.
      */
-    protected function setLogger(LoggerInterface $logger)
+    protected function setLogger(LoggerInterface $log)
     {
-        $this->logger = $logger;
+        $this->log = $log;
     }
 }
