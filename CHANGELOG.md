@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.1.0] - 2017-09-19
 ### Added
+- Monolog support and the ability to add multiple log channels/handlers.
 - TaskException class.
 - Documentation for the TaskRunner class methods.
 
