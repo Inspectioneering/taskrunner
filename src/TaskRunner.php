@@ -106,6 +106,8 @@ class TaskRunner
 
         if ($cron->isDue() || $force) {
 
+            $startTime = time();
+
             // Update the monolog processor to include the name of the task in the log record.
             $this->log->pushProcessor(function ($record) use ($name, $force) {
                 $record['extra']['task'] = $name;
@@ -114,13 +116,17 @@ class TaskRunner
                 return $record;
             });
 
-            $this->log->info(sprintf("Running task [%s]", $name));
+            $this->log->info("Running task");
 
             /**
              * @var Task $taskObject
              */
             $taskObject = new $task['class']($this->log);
             $taskObject->preExecute();
+
+            $timestamp = time() - $startTime;
+
+            $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
 
         }
     }
