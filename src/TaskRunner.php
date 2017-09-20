@@ -9,9 +9,9 @@
 namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
+use Inspectioneering\TaskRunner\Mutex\DatabaseMutex;
 use Inspectioneering\TaskRunner\Mutex\FileMutex;
 use malkusch\lock\exception\LockAcquireException;
-use malkusch\lock\mutex\FlockMutex;
 use malkusch\lock\mutex\Mutex;
 use malkusch\lock\mutex\NoMutex;
 use Monolog\Logger;
@@ -34,6 +34,11 @@ class TaskRunner
      * @var Mutex
      */
     protected $mutex;
+
+    /**
+     * @var \PDO $pdo
+     */
+    protected $pdo;
 
     /**
      * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
@@ -197,7 +202,33 @@ class TaskRunner
         if (isset($config['locking'])) {
             switch (strtolower($config['locking']['type'])) {
 
-                // FLOCK
+                // Database locking
+                case 'database':
+
+                    $adapter = !empty($config['database']['adapter']) ? $config['database']['adapter'] : 'mysql';
+                    $host = !empty($config['database']['host']) ? $config['database']['host'] : 'localhost';
+                    //$port = !empty($config['database']['port']) ? $config['database']['port'] : null;
+                    $db = !empty($config['database']['name']) ? $config['database']['name'] : null;
+                    $user = !empty($config['database']['user']) ? $config['database']['user'] : null;
+                    $password = !empty($config['database']['password']) ? $config['database']['password'] : null;
+                    $table = !empty($config['locking']['lock_table']) ? $config['locking']['lock_table'] : null;
+
+                    if ($db && $user && $password && $table) {
+
+                        if (!$this->pdo) {
+                            $dsn = sprintf("%s:dbname=%s;host=%s", $adapter, $db, $host);
+                            $this->pdo = new \PDO($dsn, $user, $password);
+                        }
+
+                        return new DatabaseMutex($this->pdo, $table, $name);
+
+                    } else {
+                        throw new TaskException("Missing database configuration parameters in tasks.yml.");
+                    }
+
+                    break;
+
+                // Temporary files
                 case 'file':
 
                     $path = (!empty($config['locking']['lock_path']) ? $config['locking']['lock_path'] : '/tmp')
