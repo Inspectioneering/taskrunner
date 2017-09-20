@@ -11,7 +11,6 @@ namespace Inspectioneering\TaskRunner;
 use Cron\CronExpression;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Yaml\Parser;
 
 class TaskRunner
 {
@@ -26,29 +25,18 @@ class TaskRunner
     protected $log;
 
     /**
-     * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
-     * either the current working directory or in the config folder.
+     * TaskRunner constructor.
      *
-     * Also, if a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
+     * If a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
      * search for the file.
      *
-     * @param null|string $configDir
+     * @param array $config
      *
      * @throws TaskException
      */
-    public function __construct($configDir = null)
+    public function __construct($config)
     {
-        $yaml = new Parser();
-
-        // Find the tasks.yml file and pull everything into an array.
-        if (file_exists($file = getcwd() . "/tasks.yml")
-            || file_exists($file = getcwd() . "/config/tasks.yml")
-            || file_exists($file = $configDir . "/tasks.yml")
-        ) {
-            $this->config = $yaml->parse(file_get_contents($file));
-        } else {
-            throw new TaskException("Could not locate the tasks.yml configuration file.");
-        }
+        $this->config = $config;
 
         // If a custom bootstrap file was included in the config, load it.
         if (isset($this->config['bootstrap'])) {
@@ -89,7 +77,6 @@ class TaskRunner
                 $this->runTask($name, $task, $force);
 
             }
-
         }
     }
 

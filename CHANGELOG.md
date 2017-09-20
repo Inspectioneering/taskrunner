@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 ### Added
 - Example task code in the README file.
+- Some unit tests for TaskRunner and TaskConfig.
 
 ### Removed
 - HHVM was removed from the Travis configuration file since it is no longer supported (http://hhvm.com/blog/2017/09/18/the-future-of-hhvm.html)
+
+### Changed
+- The configDir parameter was moved out of the TaskRunner constructor and into a new TaskConfig class to allow for testing.
 
 ## [0.1.1] - 2017-09-19
 ### Added
