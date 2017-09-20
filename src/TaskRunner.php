@@ -9,6 +9,8 @@
 namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
+use Inspectioneering\TaskRunner\Mutex\FileMutex;
+use malkusch\lock\exception\LockAcquireException;
 use malkusch\lock\mutex\FlockMutex;
 use malkusch\lock\mutex\Mutex;
 use malkusch\lock\mutex\NoMutex;
@@ -130,17 +132,21 @@ class TaskRunner
             $this->mutex = $this->configureMutex($this->config, $name);
 
             // Check to see if the task is locked right now. If not, execute it. If so, skip it.
-            $this->mutex->synchronized(function () use ($task, $startTime) {
-                /**
-                 * @var Task $taskObject
-                 */
-                $taskObject = new $task['class']($this->log);
-                $taskObject->preExecute();
+            try {
+                $this->mutex->synchronized(function () use ($task, $startTime) {
+                    /**
+                     * @var Task $taskObject
+                     */
+                    $taskObject = new $task['class']($this->log);
+                    $taskObject->preExecute();
 
-                $timestamp = time() - $startTime;
+                    $timestamp = time() - $startTime;
 
-                $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
-            });
+                    $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
+                });
+            } catch (LockAcquireException $e) {
+                $this->log->warning("This task is locked. Skipping execution.");
+            }
         }
     }
 
@@ -191,8 +197,13 @@ class TaskRunner
         if (isset($config['locking'])) {
             switch (strtolower($config['locking']['type'])) {
 
-                // SEMAPHORE
-                case 'semaphore':
+                // FLOCK
+                case 'file':
+
+                    $path = (!empty($config['locking']['lock_path']) ? $config['locking']['lock_path'] : '/tmp')
+                        . '/' . md5($name);
+
+                    return new FileMutex($path);
 
                     break;
 
