@@ -4,6 +4,8 @@ TaskRunner
 Run all of your project's recurring tasks through a single PHP script instead of having to
 create endless cron jobs.
 
+[![Build Status](https://travis-ci.org/Inspectioneering/taskrunner.svg?branch=master)](https://travis-ci.org/Inspectioneering/taskrunner)
+
 Installation
 ------------
 
