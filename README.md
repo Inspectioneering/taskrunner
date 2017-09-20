@@ -102,3 +102,26 @@ A full tasks.yml configuration file example:
 
             # Cron definition, using the standard crontab notation. This example would run every 5 minutes.
             cron: "5 * * * *"
+
+Writing tasks
+-------------
+
+Tasks are classes that extend the `\Inspectioneering\TaskRunner\Task` class and must include the public `execute()`
+function. A sample task may look like this:
+
+    <?php
+
+    // src/MyApp/Tasks/ExampleTask.php
+
+    namespace MyApp\Tasks;
+
+    use Inspectioneering\TaskRunner\Task;
+
+    class ExampleTask extends Task
+    {
+        public function execute()
+        {
+            $this->log->info("This is an example.");
+        }
+    }
+
