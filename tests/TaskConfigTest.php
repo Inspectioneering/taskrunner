@@ -16,4 +16,8 @@ class TaskConfigTest extends \PHPUnit_Framework_TestCase
 
         $config = TaskConfig::loadFromYaml('/path/to/some/fake/config/dir');
     }
+
+    /**
+     * An exception should be thrown if two or more tasks share the same name.
+     */
 }
