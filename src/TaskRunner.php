@@ -9,6 +9,9 @@
 namespace Inspectioneering\TaskRunner;
 
 use Cron\CronExpression;
+use malkusch\lock\mutex\FlockMutex;
+use malkusch\lock\mutex\Mutex;
+use malkusch\lock\mutex\NoMutex;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Parser;
@@ -24,6 +27,11 @@ class TaskRunner
      * @var LoggerInterface
      */
     protected $log;
+
+    /**
+     * @var Mutex
+     */
+    protected $mutex;
 
     /**
      * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
@@ -116,18 +124,23 @@ class TaskRunner
                 return $record;
             });
 
-            $this->log->info("Running task");
+            $this->log->info("Starting task");
 
-            /**
-             * @var Task $taskObject
-             */
-            $taskObject = new $task['class']($this->log);
-            $taskObject->preExecute();
+            // Configure locking per tasks.yml, or don't use a locking mechanism otherwise.
+            $this->mutex = $this->configureMutex($this->config, $name);
 
-            $timestamp = time() - $startTime;
+            // Check to see if the task is locked right now. If not, execute it. If so, skip it.
+            $this->mutex->synchronized(function () use ($task, $startTime) {
+                /**
+                 * @var Task $taskObject
+                 */
+                $taskObject = new $task['class']($this->log);
+                $taskObject->preExecute();
 
-            $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
+                $timestamp = time() - $startTime;
 
+                $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
+            });
         }
     }
 
@@ -162,5 +175,33 @@ class TaskRunner
         } else {
             return new Logger("tasks");
         }
+    }
+
+    /**
+     * Set up the task locking class per configuration. If no configuration, return an instance of NoMutex
+     *
+     * @param $config
+     * @param $name
+     * @return Mutex
+     *
+     * @throws TaskException
+     */
+    private function configureMutex($config, $name)
+    {
+        if (isset($config['locking'])) {
+            switch (strtolower($config['locking']['type'])) {
+
+                // SEMAPHORE
+                case 'semaphore':
+
+                    break;
+
+                default:
+                    throw new TaskException("Invalid locking mechanism specified in tasks.yml.");
+                    break;
+            }
+        }
+
+        return new NoMutex();
     }
 }
