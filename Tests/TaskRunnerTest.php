@@ -2,6 +2,7 @@
 
 namespace Inspectioneering\Component\TaskRunner\Tests;
 
+use Inspectioneering\TaskRunner\Task;
 use Inspectioneering\TaskRunner\TaskException;
 use Inspectioneering\TaskRunner\TaskRunner;
 
@@ -19,5 +20,18 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(TaskException::class);
 
         $runner = new TaskRunner($config);
+    }
+
+    /**
+     * Executing a task that isn't defined in config should throw an exception.
+     */
+    public function testUndefinedTaskThrowsException()
+    {
+        $config = array();
+
+        $this->setExpectedException(TaskException::class);
+
+        $runner = new TaskRunner($config);
+        $runner->execute('dummy_task');
     }
 }

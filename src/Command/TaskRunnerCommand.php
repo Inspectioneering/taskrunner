@@ -53,6 +53,5 @@ class TaskRunnerCommand extends Command
 
         $taskRunner = new TaskRunner($config);
         $taskRunner->execute($task, $force);
-
     }
 }

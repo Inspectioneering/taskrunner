@@ -63,10 +63,16 @@ class TaskRunner
      *
      * @param null|string $name
      * @param bool $force
+     *
+     * @throws TaskException A task was specified that doesn't exist in tasks.yml
      */
     public function execute($name = null, $force = false)
     {
         if ($name) {
+
+            if (empty($this->config['tasks'][$name])) {
+                throw new TaskException(sprintf("No task '%s' was found in the configuration", $name));
+            }
 
             $this->runTask($name, $this->config['tasks'][$name], $force);
 
