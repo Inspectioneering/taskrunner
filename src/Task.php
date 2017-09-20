@@ -24,7 +24,7 @@ abstract class Task implements TaskInterface
      */
     public function __construct(LoggerInterface $log)
     {
-        $this->setLogger($log);
+        $this->log = $log;
     }
 
     /**
@@ -37,13 +37,5 @@ abstract class Task implements TaskInterface
         } catch (\Exception $e) {
             $this->log->error(sprintf("Task encountered an error: %s", $e->getMessage()));
         }
-    }
-
-    /**
-     * @param LoggerInterface $log The name of the logger to be set.
-     */
-    protected function setLogger(LoggerInterface $log)
-    {
-        $this->log = $log;
     }
 }

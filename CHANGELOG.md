@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Example task code in the README file.
 
+### Removed
+- HHVM was removed from the Travis configuration file since it is no longer supported (http://hhvm.com/blog/2017/09/18/the-future-of-hhvm.html)
+
 ## [0.1.1] - 2017-09-19
 ### Added
 - Log number of seconds individual tasks take to complete.

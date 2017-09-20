@@ -12,6 +12,14 @@ use Psr\Log\LoggerInterface;
 
 interface TaskInterface
 {
-    public function __construct(LoggerInterface $logger);
+    /**
+     * TaskInterface constructor.
+     * @param LoggerInterface $log
+     */
+    public function __construct(LoggerInterface $log);
+
+    /**
+     * @return mixed
+     */
     public function execute();
 }

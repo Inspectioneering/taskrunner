@@ -107,7 +107,15 @@ Writing tasks
 -------------
 
 Tasks are classes that extend the `\Inspectioneering\TaskRunner\Task` class and must include the public `execute()`
-function. A sample task may look like this:
+function.
+
+You can make use of Monolog with the `$log` class variable, using standard PSR-3 logging methods (e.g.
+`$this->log->info('something');` or `$this->log->emergency('uh oh!');`. Ideally, you should take advantage of the
+various handlers provided by Monolog to perform different actions at different error levels. For example, if the task
+fails for any reason, you might log a critical error that is emailed to you, while info and warning logs simply go into
+a file.
+
+A sample task may look like this:
 
     <?php
 
