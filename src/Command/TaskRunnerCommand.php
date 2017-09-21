@@ -9,6 +9,7 @@
 namespace Inspectioneering\TaskRunner\Command;
 
 use Inspectioneering\TaskRunner\TaskRunner;
+use Inspectioneering\TaskRunner\TaskConfig;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,8 +49,9 @@ class TaskRunnerCommand extends Command
         $configDir = ($input->getOption('config-dir') ? $input->getOption('config-dir') : null);
         $force = ($input->getOption('force') ? true : false);
 
-        $taskRunner = new TaskRunner($configDir);
-        $taskRunner->execute($task, $force);
+        $config = TaskConfig::loadFromYaml($configDir);
 
+        $taskRunner = new TaskRunner($config);
+        $status = $taskRunner->execute($task, $force);
     }
 }

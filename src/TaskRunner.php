@@ -16,7 +16,6 @@ use malkusch\lock\mutex\Mutex;
 use malkusch\lock\mutex\NoMutex;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Yaml\Parser;
 
 class TaskRunner
 {
@@ -41,29 +40,18 @@ class TaskRunner
     protected $pdo;
 
     /**
-     * TaskRunner constructor. When $configDir is not specified, this method will search for a tasks.yml file in
-     * either the current working directory or in the config folder.
+     * TaskRunner constructor.
      *
-     * Also, if a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
+     * If a bootstrap file is specified in the tasks.yml file, this method will traverse a few levels down to
      * search for the file.
      *
-     * @param null|string $configDir
+     * @param array $config
      *
      * @throws TaskException
      */
-    public function __construct($configDir = null)
+    public function __construct($config)
     {
-        $yaml = new Parser();
-
-        // Find the tasks.yml file and pull everything into an array.
-        if (file_exists($file = getcwd() . "/tasks.yml")
-            || file_exists($file = getcwd() . "/config/tasks.yml")
-            || file_exists($file = $configDir . "/tasks.yml")
-        ) {
-            $this->config = $yaml->parse(file_get_contents($file));
-        } else {
-            throw new TaskException("Could not locate the tasks.yml configuration file.");
-        }
+        $this->config = $config;
 
         // If a custom bootstrap file was included in the config, load it.
         if (isset($this->config['bootstrap'])) {
@@ -90,21 +78,35 @@ class TaskRunner
      *
      * @param null|string $name
      * @param bool $force
+     * @return array Keys are names of tasks that were executed, values are "success", "failed", or "skipped"
+     *
+     * @throws TaskException A task was specified that doesn't exist in tasks.yml
      */
     public function execute($name = null, $force = false)
     {
         if ($name) {
 
-            $this->runTask($name, $this->config['tasks'][$name], $force);
+            if (empty($this->config['tasks'][$name])) {
+                throw new TaskException(sprintf("No task '%s' was found in the configuration", $name));
+            }
+
+            $status = $this->runTask($name, $this->config['tasks'][$name], $force);
+
+            return array($name => $status);
 
         } else {
 
+            $attempts = array();
+
             foreach ($this->config['tasks'] as $name => $task) {
 
-                $this->runTask($name, $task, $force);
+                $status = $this->runTask($name, $task, $force);
+
+                $attempts[] = array($name => $status);
 
             }
 
+            return $attempts;
         }
     }
 
@@ -114,10 +116,12 @@ class TaskRunner
      * @param $name
      * @param $task
      * @param $force
+     * @return string "success", "failed", or "skipped"
      */
     private function runTask($name, $task, $force)
     {
         $cron = CronExpression::factory($task['cron']);
+        $status = "skipped";
 
         if ($cron->isDue() || $force) {
 
@@ -143,7 +147,7 @@ class TaskRunner
                      * @var Task $taskObject
                      */
                     $taskObject = new $task['class']($this->log);
-                    $taskObject->preExecute();
+                    $status = $taskObject->preExecute();
 
                     $timestamp = time() - $startTime;
 
@@ -153,6 +157,8 @@ class TaskRunner
                 $this->log->warning("This task is locked. Skipping execution.");
             }
         }
+
+        return $status;
     }
 
     /**
