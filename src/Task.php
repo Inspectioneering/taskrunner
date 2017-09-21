@@ -29,6 +29,8 @@ abstract class Task implements TaskInterface
 
     /**
      * This function is called before the task is executed to handle errors.
+     *
+     * @return string "failed" if execution fails, "success" if it succeeds
      */
     public function preExecute()
     {
@@ -36,6 +38,9 @@ abstract class Task implements TaskInterface
             $this->execute();
         } catch (\Exception $e) {
             $this->log->error(sprintf("Task encountered an error: %s", $e->getMessage()));
+            return "failed";
         }
+
+        return "success";
     }
 }

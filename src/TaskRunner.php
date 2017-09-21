@@ -63,6 +63,7 @@ class TaskRunner
      *
      * @param null|string $name
      * @param bool $force
+     * @return array Keys are names of tasks that were executed, values are "success", "failed", or "skipped"
      *
      * @throws TaskException A task was specified that doesn't exist in tasks.yml
      */
@@ -74,15 +75,23 @@ class TaskRunner
                 throw new TaskException(sprintf("No task '%s' was found in the configuration", $name));
             }
 
-            $this->runTask($name, $this->config['tasks'][$name], $force);
+            $status = $this->runTask($name, $this->config['tasks'][$name], $force);
+
+            return array($name => $status);
 
         } else {
 
+            $attempts = array();
+
             foreach ($this->config['tasks'] as $name => $task) {
 
-                $this->runTask($name, $task, $force);
+                $status = $this->runTask($name, $task, $force);
+
+                $attempts[] = array($name => $status);
 
             }
+
+            return $attempts;
         }
     }
 
@@ -92,10 +101,12 @@ class TaskRunner
      * @param $name
      * @param $task
      * @param $force
+     * @return string "success", "failed", or "skipped"
      */
     private function runTask($name, $task, $force)
     {
         $cron = CronExpression::factory($task['cron']);
+        $status = "skipped";
 
         if ($cron->isDue() || $force) {
 
@@ -115,13 +126,14 @@ class TaskRunner
              * @var Task $taskObject
              */
             $taskObject = new $task['class']($this->log);
-            $taskObject->preExecute();
+            $status = $taskObject->preExecute();
 
             $timestamp = time() - $startTime;
 
             $this->log->info(sprintf("Task completed in %d seconds", $timestamp));
-
         }
+
+        return $status;
     }
 
     /**

@@ -19,7 +19,7 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(TaskException::class);
 
-        $runner = new TaskRunner($config);
+        return new TaskRunner($config);
     }
 
     /**

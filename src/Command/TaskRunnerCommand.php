@@ -52,6 +52,6 @@ class TaskRunnerCommand extends Command
         $config = TaskConfig::loadFromYaml($configDir);
 
         $taskRunner = new TaskRunner($config);
-        $taskRunner->execute($task, $force);
+        $status = $taskRunner->execute($task, $force);
     }
 }
