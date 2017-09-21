@@ -56,6 +56,10 @@ The tasks.yml file should contain definitions for one or more tasks. Each task r
 * `class` - Class name of the task to run. The class should extend `Task` and should include a namespace, if necessary.
 * `cron` - CRON expression that determines how often the task should be executed.
 
+Ideally, tasks should be configured with some sort of a locking mechanism. That is, if TaskRunner tries to run the same
+task again before its previous execution has finished, it should fail. You can currently use file-based or database
+locking methods.
+
 You can also configure one or more logging channels using the Monolog library. To do so, define each of the channels
 as an array in the `monolog.handlers` property using the following format:
 
@@ -76,6 +80,15 @@ A full tasks.yml configuration file example:
 
     # Instantiate a bootstrap file when running tasks.
     bootstrap: "vendor/autoload.php"
+
+    # Configure a locking mechanism
+    locking:
+
+        # Options are "file" or "database"
+        type: "file"
+
+        # Default path is /tmp.
+        file_path: "relative/path/in/my/project"
 
     # Configure Monolog logging.
     monolog:
