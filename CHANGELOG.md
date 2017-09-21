@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
+- Ability to configure file and database mutex/locking mechanisms.
 - Example task code in the README file.
 - Some unit tests for TaskRunner and TaskConfig.
 
