@@ -35,7 +35,11 @@ Usage
 
 Tasks will only be executed if they meet the cron criteria you've defined in your tasks.yml file.
 
-Via command line:
+List all configured tasks via command line:
+
+* `vendor/bin/taskrunner list`
+
+Run a task via command line:
 
 * `vendor/bin/taskrunner run` - Run all active tasks
 * `vendor/bin/taskrunner run --task=[name]` - Run a single task

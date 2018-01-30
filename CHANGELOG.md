@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.1.3] - 2018-01-30
+### Added
+- The LIST command, which provides a list of all tasks defined as well as cron information.
+
 ## [0.1.2] - 2017-09-20
 ### Added
 - Ability to configure file and database mutex/locking mechanisms.

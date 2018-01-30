@@ -9,9 +9,11 @@ if (!class_exists('\Symfony\Component\Console\Application')) {
     }
 }
 
-use Inspectioneering\TaskRunner\Command\TaskRunnerCommand;
+use Inspectioneering\TaskRunner\Command\ListCommand;
+use Inspectioneering\TaskRunner\Command\RunCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
-$application->add(new TaskRunnerCommand());
+$application->add(new ListCommand());
+$application->add(new RunCommand());
 $application->run();
