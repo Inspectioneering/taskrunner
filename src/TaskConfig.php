@@ -27,6 +27,7 @@ class TaskConfig
         if (($directory && file_exists($file = __DIR__ . "/../" . $directory . "/tasks.yml"))
             || ($directory && file_exists($file = __DIR__ . "/../../" . $directory . "/tasks.yml"))
             || ($directory && file_exists($file = __DIR__ . "/../../../" . $directory . "/tasks.yml"))
+            || ($directory && file_exists($file = __DIR__ . "/../../../../" . $directory . "/tasks.yml"))
             || file_exists($file = __DIR__ . "/tasks.yml")
             || file_exists($file = __DIR__ . "/../tasks.yml")
             || file_exists($file = __DIR__ . "/../../tasks.yml")
