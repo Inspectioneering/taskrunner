@@ -59,6 +59,7 @@ class TaskRunner
                 || file_exists($file = __DIR__ . "/../" . $this->config['bootstrap'])
                 || file_exists($file = __DIR__ . "/../../" . $this->config['bootstrap'])
                 || file_exists($file = __DIR__ . "/../../../" . $this->config['bootstrap'])
+                || file_exists($file = __DIR__ . "/../../../../" . $this->config['bootstrap'])
                 || file_exists($file = $this->config['bootstrap'])
             ) {
                 require_once($file);

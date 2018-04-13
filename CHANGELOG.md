@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.1.4] - 2018-04-13
+### Fixed
+- When looking for a bootstrap file as defined in tasks.yml, TaskRunner searches one directory further down. This should allow relative paths to work even when the script is being called from an absolute path.
+
 ## [0.1.3] - 2018-01-30
 ### Added
 - The LIST command, which provides a list of all tasks defined as well as cron information.
