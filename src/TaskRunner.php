@@ -25,6 +25,11 @@ class TaskRunner
     protected $config;
 
     /**
+     * @var bool Flag that is set by passing the --dry-run argument from the command line
+     */
+    protected $dryRun;
+
+    /**
      * @var LoggerInterface
      */
     protected $log;
@@ -46,12 +51,14 @@ class TaskRunner
      * search for the file.
      *
      * @param array $config
+     * @param bool $dryRun
      *
      * @throws TaskException
      */
-    public function __construct($config)
+    public function __construct($config, $dryRun = false)
     {
         $this->config = $config;
+        $this->dryRun = $dryRun;
 
         // If a custom bootstrap file was included in the config, load it.
         if (isset($this->config['bootstrap'])) {
@@ -147,7 +154,7 @@ class TaskRunner
                     /**
                      * @var Task $taskObject
                      */
-                    $taskObject = new $task['class']($this->log);
+                    $taskObject = new $task['class']($this->log, $this->dryRun);
                     $status = $taskObject->preExecute();
 
                     $timestamp = time() - $startTime;

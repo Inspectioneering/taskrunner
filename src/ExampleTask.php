@@ -7,6 +7,11 @@ class ExampleTask extends Task
     public function execute()
     {
         sleep(10);
-        $this->log->info("Hello");
+        if ($this->dryRun) {
+            $this->log->info("Dry run of task.");
+        } else {
+            $this->log->info("Not dry run (live) task.");
+        }
+
     }
 }

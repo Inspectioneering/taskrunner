@@ -15,8 +15,9 @@ interface TaskInterface
     /**
      * TaskInterface constructor.
      * @param LoggerInterface $log
+     * @param bool $dryRun
      */
-    public function __construct(LoggerInterface $log);
+    public function __construct(LoggerInterface $log, $dryRun);
 
     /**
      * @return mixed

@@ -40,6 +40,12 @@ class RunCommand extends Command
                 InputOption::VALUE_NONE,
                 'Add this flag to force the task(s) to run, regardless of their cron'
             )
+            ->addOption(
+                'dry-run',
+                'd',
+                InputOption::VALUE_NONE,
+                'Add this flag to do a dry run of the task (must be set up properly in the Task class)'
+            )
         ;
     }
 
@@ -48,10 +54,11 @@ class RunCommand extends Command
         $task = ($input->getOption('task') ? $input->getOption('task') : null);
         $configDir = ($input->getOption('config-dir') ? $input->getOption('config-dir') : null);
         $force = ($input->getOption('force') ? true : false);
+        $dryRun = ($input->getOption('dry-run') ? true : false);
 
         $config = TaskConfig::loadFromYaml($configDir);
 
-        $taskRunner = new TaskRunner($config);
+        $taskRunner = new TaskRunner($config, $dryRun);
         $status = $taskRunner->execute($task, $force);
     }
 }

@@ -18,13 +18,20 @@ abstract class Task implements TaskInterface
     protected $log;
 
     /**
+     * @var bool True if --dry-run is passed from commandline
+     */
+    protected $dryRun;
+
+    /**
      * Task constructor.
      *
      * @param LoggerInterface $log
+     * @param bool $dryRun
      */
-    public function __construct(LoggerInterface $log)
+    public function __construct(LoggerInterface $log, $dryRun)
     {
         $this->log = $log;
+        $this->dryRun = $dryRun;
     }
 
     /**
